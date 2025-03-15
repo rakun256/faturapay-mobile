@@ -8,11 +8,17 @@ import androidx.compose.ui.unit.dp // Eksik import eklendi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.livedata.observeAsState // Eksik import eklendi
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
+import com.faturapay.viewmodel.AuthViewModel
 import com.faturapay.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
+fun SettingsScreen(
+    navController: NavController, // NavController ekleniyor
+    viewModel: SettingsViewModel = viewModel(),
+    authViewModel: AuthViewModel
+) {
     val darkModeEnabled by viewModel.darkModeEnabled.observeAsState(false)
 
     Column(
@@ -30,6 +36,20 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text("Karanlık Mod")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                authViewModel.logout()
+                navController.navigate("login") {
+                    popUpTo("login") { inclusive = true }
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Çıkış Yap")
         }
     }
 }

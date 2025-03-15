@@ -12,6 +12,7 @@ class LoginViewModel : ViewModel() {
         if (email.value.isNullOrBlank() || password.value.isNullOrBlank()) {
             isLoginSuccessful.value = false
         } else {
+            // Test kullanıcı bilgileri: test@faturapay.com, 123456
             isLoginSuccessful.value = email.value == "test@faturapay.com" && password.value == "123456"
         }
     }
