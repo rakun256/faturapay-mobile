@@ -25,7 +25,7 @@ fun AddSubscriptionDialog(onDismiss: () -> Unit, onAddSubscription: (Subscriptio
         title = {
             Text(
                 text = "Yeni Abonelik Ekle",
-                color = DarkPrimary,
+                color = DarkGray,
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -87,7 +87,7 @@ fun AddSubscriptionDialog(onDismiss: () -> Unit, onAddSubscription: (Subscriptio
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("İptal", color = DarkPrimary)
+                Text("İptal", color = DarkGray)
             }
         }
     )

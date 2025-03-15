@@ -45,13 +45,6 @@ fun SubscriptionScreen(viewModel: SubscriptionViewModel = viewModel()) {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Abonelikler",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
             LazyColumn {
                 items(subscriptions) { subscription ->  // ✅ `it` yerine `subscription` ismi açıkça yazıldı
                     SubscriptionItem(

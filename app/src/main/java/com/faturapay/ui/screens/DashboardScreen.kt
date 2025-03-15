@@ -14,56 +14,80 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.faturapay.data.model.Invoice
+import com.faturapay.data.model.Subscription
 import com.faturapay.ui.components.DashboardInvoiceItem
+import com.faturapay.ui.components.DashboardSubscriptionItem
 import com.faturapay.viewmodel.DashboardViewModel
+import com.faturapay.viewmodel.SubscriptionViewModel
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel = viewModel()) {
+fun DashboardScreen(
+    navController: NavController,
+    viewModel: DashboardViewModel = viewModel(),
+    subscriptionViewModel: SubscriptionViewModel = viewModel()
+) {
     val invoices by viewModel.invoices.observeAsState(emptyList())
+    val subscriptions by subscriptionViewModel.subscriptions.observeAsState(emptyList())
 
     val unpaidInvoices = invoices.filter { !it.isPaid }
     val paidInvoices = invoices.filter { it.isPaid }
     val overdueInvoices = invoices.filter { !it.isPaid && it.dueDate.before(Date()) }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Merhaba, Kullanıcı!",
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Hesap Durumu: ${unpaidInvoices.size} ödenmemiş, ${overdueInvoices.size} gecikmiş fatura.",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            SummaryCard("Ödenmemiş", unpaidInvoices.size, MaterialTheme.colorScheme.primary, Modifier.weight(1f))
-            SummaryCard("Gecikmiş", overdueInvoices.size, MaterialTheme.colorScheme.error, Modifier.weight(1f))
-            SummaryCard("Ödenmiş", paidInvoices.size, MaterialTheme.colorScheme.secondary, Modifier.weight(1f))
+        item {
+            // **Kullanıcı Bilgisi**
+            Text(
+                text = "Merhaba, Kullanıcı!",
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Hesap Durumu: ${unpaidInvoices.size} ödenmemiş, ${overdueInvoices.size} gecikmiş fatura.",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Son Faturalar",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn {
-            items(invoices.take(5)) { invoice: Invoice ->
-                DashboardInvoiceItem(invoice)
+        item {
+            // **Özet Kartları**
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SummaryCard("Ödenmemiş", unpaidInvoices.size, MaterialTheme.colorScheme.primary, Modifier.weight(1f))
+                SummaryCard("Gecikmiş", overdueInvoices.size, MaterialTheme.colorScheme.error, Modifier.weight(1f))
+                SummaryCard("Ödenmiş", paidInvoices.size, MaterialTheme.colorScheme.secondary, Modifier.weight(1f))
             }
+        }
+
+        item {
+            // **Son Faturalar Başlığı**
+            Text(
+                text = "Son Faturalar",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+        }
+
+        items(invoices.take(5)) { invoice: Invoice ->
+            DashboardInvoiceItem(invoice)
+        }
+
+        item {
+            // **Son Abonelikler Başlığı**
+            Text(
+                text = "Son Abonelikler",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+        }
+
+        items(subscriptions) { subscription: Subscription ->
+            DashboardSubscriptionItem(subscription)
         }
     }
 }

@@ -24,7 +24,7 @@ fun EditSubscriptionDialog(
         containerColor = LightBackground,
         shape = RoundedCornerShape(20.dp),
         title = {
-            Text(text = "Abonelik Düzenle", color = DarkPrimary)
+            Text(text = "Abonelik Düzenle", color = DarkGray)
         },
         text = {
             Column(modifier = Modifier.padding(8.dp)) {
@@ -60,7 +60,7 @@ fun EditSubscriptionDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("İptal", color = DarkPrimary) }
+            TextButton(onClick = onDismiss) { Text("İptal", color = DarkGray) }
         }
     )
 }
