@@ -2,41 +2,96 @@ package com.faturapay.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.faturapay.data.model.Invoice
+import com.faturapay.ui.components.DashboardInvoiceItem
 import com.faturapay.viewmodel.DashboardViewModel
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
+fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel = viewModel()) {
     val invoices by viewModel.invoices.observeAsState(emptyList())
+
+    val unpaidInvoices = invoices.filter { !it.isPaid }
+    val paidInvoices = invoices.filter { it.isPaid }
+    val overdueInvoices = invoices.filter { !it.isPaid && it.dueDate.before(Date()) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = "Faturalar", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Merhaba, Kullanıcı!",
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Hesap Durumu: ${unpaidInvoices.size} ödenmemiş, ${overdueInvoices.size} gecikmiş fatura.",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            SummaryCard("Ödenmemiş", unpaidInvoices.size, MaterialTheme.colorScheme.primary, Modifier.weight(1f))
+            SummaryCard("Gecikmiş", overdueInvoices.size, MaterialTheme.colorScheme.error, Modifier.weight(1f))
+            SummaryCard("Ödenmiş", paidInvoices.size, MaterialTheme.colorScheme.secondary, Modifier.weight(1f))
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Son Faturalar",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn {
-            itemsIndexed(invoices) { _, invoice ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = invoice.title, style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "Tutar: ${invoice.amount} TL", style = MaterialTheme.typography.bodySmall)
-                        Text(text = "Son Ödeme: ${invoice.dueDate}", style = MaterialTheme.typography.bodySmall)
-                    }
-                }
+            items(invoices.take(5)) { invoice: Invoice ->
+                DashboardInvoiceItem(invoice)
             }
+        }
+    }
+}
+
+@Composable
+fun SummaryCard(title: String, count: Int, color: Color, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .padding(4.dp),
+        colors = CardDefaults.cardColors(containerColor = color)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+            )
+            Text(
+                text = "$count",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            )
         }
     }
 }

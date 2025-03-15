@@ -2,12 +2,15 @@ package com.faturapay.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Pastel tonlarda modern ve yumuşak renk paleti
+val Indigo500 = Color(0xFFA7ABDE) // Pastel Indigo
+val Indigo700 = Color(0xFFCED1F8) // Açık Pastel Indigo
+val PinkA200 = Color(0xFFFFA5D6) // Canlı Pastel Pembe
+val LightBackground = Color(0xFFFFF0F1) // Hafif Pastel Arka Plan
+val White = Color(0xFFFFFFFF) // Beyaz
+val DarkGray = Color(0xFF2F2D2D) // Hafif Pastel Gri-Pembe
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-
-val LightPrimary = Color(0xFFBB86FC)
+// Uygulama için özel renkler
+val LightPrimary = Indigo500
+val DarkPrimary = Indigo700
+val AccentColor = PinkA200
